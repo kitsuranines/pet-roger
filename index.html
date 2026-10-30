@@ -1,0 +1,37 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+html,body{margin:0;width:100vw;height:100vh;background:transparent;overflow:hidden;font-family:"Segoe UI",sans-serif;user-select:none}
+.hit{} /* elements that should receive the mouse */
+#roger{position:absolute;width:230px;height:230px;left:0;top:0;will-change:transform}
+#sprite{position:relative;width:230px;height:230px;transform-origin:50% 100%}
+#sprite .layer{position:absolute;left:0;top:0;width:230px;height:230px;pointer-events:none}
+.walksheet{background:url(sprites/side.webp) 0 0/230px 230px no-repeat;transform-origin:50% 98%}.walksheet.gait{background-image:url(sprites/walk_sheet.webp);background-size:1840px 230px}
+#sprite img{width:230px;height:230px;display:block;pointer-events:none}
+#sprite .layers{position:relative;width:230px;height:230px}#sprite .layers img{position:absolute;left:0;top:0}#sprite .tseg{position:absolute;left:0;top:0;width:230px;height:230px}#sprite .tseg img{width:230px;height:230px}#tail{transform-origin:63.2% 91.6%}#sprite img[src*=scruff]{transform-origin:50% 1.6%}#t1{transform-origin:70% 80.5%}#t2{transform-origin:71% 68.5%}
+
+#sprite.dirty .layer{filter:sepia(.45) brightness(.9)}
+.breathe{animation:br 3.2s ease-in-out infinite}@keyframes br{50%{transform:scale(1.02,.975)}}
+.hop{animation:hop .45s ease-out 3!important}@keyframes hop{40%{transform:translateY(-55px) scale(.95,1.06)}80%{transform:translateY(0) scale(1.08,.9)}}
+.thud{animation:thud .45s cubic-bezier(.2,.8,.3,1)!important;transform-origin:50% 100%}@keyframes thud{0%{transform:scale(1.22,.72)}45%{transform:scale(.94,1.08)}100%{transform:none}}
+.squish{animation:sq .35s ease!important}@keyframes sq{50%{transform:scale(1.07,.88)}}
+.wiggle{animation:wg .3s ease!important}@keyframes wg{25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
+#bubble{position:absolute;max-width:260px;background:#fff;border:3px solid #2a1a14;border-radius:14px;padding:8px 10px;font-size:13px;font-weight:600;color:#2a1a14;opacity:0;transition:opacity .25s;box-shadow:0 3px 0 #ff8a1e;pointer-events:none}
+#bubble.show{opacity:1}
+#zzz{position:absolute;font-size:22px;font-weight:800;color:#a98cff;display:none;animation:z 2s infinite;pointer-events:none}@keyframes z{0%{transform:translate(0,0);opacity:0}50%{opacity:1}100%{transform:translate(15px,-30px);opacity:0}}
+#bars{position:absolute;display:flex;gap:4px;width:200px;opacity:0;transition:opacity .2s;pointer-events:none}
+#bars.show{opacity:1}
+.bar{flex:1;height:20px;background:#2a1a14cc;border-radius:6px;position:relative;color:#fff;font-size:11px;text-align:center;line-height:20px;overflow:hidden}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:#ff8a1e}.bar span{position:relative;display:inline-block;margin-top:2px}.bar svg{width:16px;height:16px;vertical-align:top}
+#ball{transition:opacity .5s;position:absolute;width:44px;height:44px;border-radius:50%;display:none;cursor:grab;
+ background:radial-gradient(circle at 35% 30%,#fff 0 8%,#ffb15c 20%,#ff7a00 60%,#b34700 100%);box-shadow:inset -4px -6px 0 #0003}
+#ball:after{content:"";position:absolute;inset:6px 18px;border-left:3px solid #2a1a14;border-right:3px solid #2a1a14;border-radius:50%;opacity:.5}
+#tool{position:absolute;font-size:46px;pointer-events:none;display:none;transform:translate(-20px,-30px)}
+#hint{position:absolute;left:50%;top:20px;transform:translateX(-50%);background:#2a1a14ee;color:#fff;padding:8px 14px;border-radius:10px;font-size:14px;display:none;pointer-events:none}
+.p{position:absolute;pointer-events:none;font-size:20px;animation:pf 1s ease-out forwards}
+@keyframes pf{to{transform:translate(var(--dx),-60px) scale(.4);opacity:0}}
+body.capture{cursor:none}
+</style></head><body>
+<div id="roger" class="hit"><div id="sprite" class="breathe"></div></div>
+<div id="bubble"></div><div id="zzz">Z z</div>
+<div id="bars"><div class="bar" id="b-hunger"><i></i><span data-ic="hunger"></span></div><div class="bar" id="b-mood"><i></i><span data-ic="mood"></span></div><div class="bar" id="b-energy"><i></i><span data-ic="energy"></span></div><div class="bar" id="b-clean"><i></i><span data-ic="clean"></span></div></div>
+<div id="ball" class="hit"></div><div id="tool"></div><div id="hint"></div>
+<script src="lines.js"></script><script src="game.js"></script></body></html>

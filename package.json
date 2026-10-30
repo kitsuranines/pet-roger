@@ -1,0 +1,1 @@
+{"name":"roger-pet","version":"0.1.0","description":"Roger the judgemental fox demon desktop pet","main":"main.js","scripts":{"start":"electron ."},"devDependencies":{"@electron/packager":"^18.4.4","electron":"^31.7.7","resedit":"^2.0.3"}}

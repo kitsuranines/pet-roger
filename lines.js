@@ -1,0 +1,31 @@
+const LINES = {
+  hello:["Oh. You're back. Thrilling.","I was NOT waiting for you. I was judging the wallpaper.","Finally. Do you know how long a demon can stare at a taskbar?"],
+  feed:{
+    cheese:["Cheese. Acceptable. Barely.","A fox with cheese. Very original. ...Give me more.","Fine. You've earned three seconds of my respect."],
+    steak:["STEAK. Now you're learning.","Medium rare. You may live another day.","This is the correct way to worship me."],
+    candy:["Candy corn?? Who hurt you.","I'll eat it, but I'm telling everyone.","Tastes like wax and bad decisions. Seasonal, though."],
+    heart:["Ooh, a fresh one. Don't ask whose.","Now THIS is a snack. You may live.","Crunchy. Delicious. Slightly haunted."]},
+  full:["I'm full. Are you trying to make me roll home?","No. Stop. I am a fox, not a landfill."],
+  petStart:["...What's that hand doing. Don't you dare.","Approach the head slowly. I bite."],
+  pet:["Ugh, fine. Keep going. NOT because I like it.","Don't tell chat I'm enjoying this.","Your petting technique is... a 6/10. Okay, 7.","Watch the horns. They're load-bearing.","Hmph. ...Left ear. A little more. Fine."],
+  petDone:["That's enough affection for one century.","I'll allow that to happen again. Maybe."],
+  playStart:["A ball? How primitive. ...Throw it. NOW.","Fling it. I dare you to throw it badly."],
+  chase:["MINE!","Don't you DARE bounce away from me!","I'm not running, I'm hunting. Different thing.","Get back here, sphere!"],
+  catch:["Got it. Obviously. I am perfection.","Caught. You throw like a ghost with no arms.","Here. Throw it again. Not that I care."],
+  tired:["Too tired. Play with a horror game instead.","Zero energy. Ask me again after my 14-hour nap.","No. My legs have filed a complaint."],
+  cleanStart:["A brush? I am already flawless. ...Fine.","Gentle. This fluff costs more than your PC."],
+  clean:["Mm. Okay. Okay that's nice. Shut up.","Watch the tail. It's sacred.","Sparkling. Majestic. Keep going.","I'm only purring ironically."],
+  cleanDone:["Pristine. You may now admire me.","I suppose you're... useful. Sometimes."],
+  sleep:["Lights out. If you wake me up I'm haunting your mic.","Goodnight. Don't play horror games without me."],
+  wake:["Who dares... oh. It's you. Ugh.","I was dreaming about being worshipped. Thanks for ruining it."],
+  hungry:["Hello?? Starving demon over here.","I could eat your whole stream setup right now.","If I faint, it's on your conscience."],
+  sad:["Nobody pets me. I'll just sit here. Alone. Judging.","Wow. Ignored on my own desktop."],
+  dirty:["I smell like a basement. Fix this.","There is something in my fluff. Something alive."],
+  sleepy:["*yawn* ...I'm not sleepy, you're sleepy.","My eyes are closing out of boredom, not tiredness."],
+  idle:["How could Nines do this?","Are you going to click something or just exist?","That's a lot of tabs. Concerning.","I've seen better posture on a skeleton.","Did you hydrate today? Not that I care.","Play a scary game. I want to watch you scream.","You know I can see your screen, right?","Rating your desktop: 4/10. Needs more me.","Don't mind me. Just a superior being, sitting here."],
+  land:["Hmph. I meant to do that.","Gravity is also beneath me.","Ow. Not that you care.","Graceful. Obviously."],
+  landHard:["WHO drops a DEMON?!","I landed on my dignity. It's broken.","That was a war crime.","You'll pay for that in snacks.","Ten out of ten landing. Zero out of ten owner."],
+  drag:["PUT ME DOWN.","I am not a carry-on item!","Whee- I mean, how DARE you."],
+  click:["What.","Poke me again. I dare you.","Yes, I'm cute. Move along."]
+};
+const pick = a => a[Math.floor(Math.random()*a.length)];
