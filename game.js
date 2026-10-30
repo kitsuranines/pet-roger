@@ -117,6 +117,7 @@ function stopPlay(){ // Play OFF: ball gone; if he's up in the air he drops to t
   ball.on=false;ball.held=false;ball.owner=false;const b=$('ball');b.style.opacity=0;setTimeout(()=>{if(!ball.on)b.style.display='none';},600);
   const wasCarry=R.carry;R.carry=false;if(R.mode==='chase'||R.mode==='hold'||R.mode==='return'){R.tx=null;R.ty=null;R.mode='idle';}
   if(R.y<groundY()-1&&!dragging){R.falling=true;R.vy=0;}R.pause=150+Math.random()*250;log('play off',wasCarry);save();}
+function startScruff(x,y){press=null;dragging=true;moved=0;lx=x;ly=y;R.x=x-SCRUFF.x;R.y=y-SCRUFF.y;sway.v+=(x-(R.x+SZ/2))*0.1;R.tx=null;R.ty=null;R.carry=false;R.falling=false;R.vy=0;}
 function startPlay(){
   if(S.energy<15){say(pick(LINES.tired));setTemp('annoyed',2500);anim('wiggle');return;}
   ball.on=true;ball.touched=Date.now();$('ball').style.opacity=1;ball.held=false;ball.owner=false;R.carry=false;ball.x=R.x+SZ/2;ball.y=R.y-40;ball.vx=0;ball.vy=0;
@@ -229,11 +230,12 @@ function loop(now){
 }
 
 // ---- input ----
-let dragging=false,moved=0,lx=0,ly=0;
+let dragging=false,moved=0,lx=0,ly=0,press=null; // press = mousedown on Roger, not yet a drag
 window.addEventListener('mousemove',e=>{
   const x=e.clientX,y=e.clientY;
   if(tool){toolMove(x,y);return;}
   if(ball.held){ball.x=x;ball.y=y;ball.hist.push([x,y,performance.now()]);if(ball.hist.length>6)ball.hist.shift();return;}
+  if(press&&!dragging){if((e.buttons&1)&&Math.hypot(x-press.x,y-press.y)>6)startScruff(x,y);else return;}
   if(dragging){R.x=x-SCRUFF.x;R.y=y-SCRUFF.y;moved+=Math.abs(x-lx)+Math.abs(y-ly);lx=x;ly=y;if(moved>40&&moved<60)say(pick(LINES.drag),2000);return;}
   setCapture(overRoger(x,y)||overBall(x,y));
 });
@@ -242,13 +244,15 @@ window.addEventListener('mousedown',e=>{
   if(e.button===2){if(tool){endTool();e.preventDefault();}return;}
   if(tool)return;
   if(overBall(x,y)){ball.touched=Date.now();ball.held=true;R.carry=false;ball.owner=false;R.tx=null;ball.hist=[[x,y,performance.now()]];setCapture(true);return;}
-  if(overRoger(x,y)){dragging=true;moved=0;lx=x;ly=y;R.x=x-SCRUFF.x;R.y=y-SCRUFF.y;sway.v+=(x-(R.x+SZ/2))*0.1;R.tx=null;R.ty=null;R.carry=false;R.falling=false;R.vy=0;setCapture(true);}
+  if(overRoger(x,y)){press={x,y};setCapture(true);} // scruff only starts once the pointer moves >6px while held
 });
 window.addEventListener('mouseup',e=>{
   if(ball.held){ball.held=false;const h=ball.hist,a=h[0],b=h[h.length-1],t=Math.max((b[2]-a[2])/1000,0.016);
     ball.vx=(b[0]-a[0])/t;ball.vy=(b[1]-a[1])/t;const sp=Math.hypot(ball.vx,ball.vy);if(sp>2600){ball.vx*=2600/sp;ball.vy*=2600/sp;}
     if(Math.hypot(ball.vx,ball.vy)<200){ball.vx=(Math.random()<.5?-1:1)*(600+Math.random()*500);ball.vy=-900;} // simple click = toss
     ball.touched=Date.now();ball.throwX=e.clientX;ball.throwY=e.clientY;ball.owner=true;log('throw',ball.vx|0,ball.vy|0);return;}
+  if(press&&!dragging){press=null;say(pick(LINES.click),2500);return;} // plain click: no scruff, no fall
+  press=null;
   if(dragging&&moved<5){say(pick(LINES.click),2500);}
   if(dragging&&R.y<groundY()-1&&!S.asleep){R.falling=true;R.vy=0;log('drop',R.y|0);}
   else if(dragging&&R.y<groundY()-1){R.falling=true;R.vy=0;}
