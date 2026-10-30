@@ -3,6 +3,11 @@ let tray, lastWalking = true, lastPlaying = false;
 const ICON = path => require('path').join(__dirname, 'build', path);
 const fs = require('fs'), path = require('path');
 let win;
+const prefFile = () => path.join(app.getPath('userData'), 'roger-prefs.json');
+let onTop = true;
+function loadPrefs() { try { const p = JSON.parse(fs.readFileSync(prefFile(), 'utf8')); if (typeof p.onTop === 'boolean') onTop = p.onTop; } catch (e) {} }
+function setOnTop(v) { onTop = v; if (win) { if (v) win.setAlwaysOnTop(true, 'screen-saver'); else win.setAlwaysOnTop(false); }
+  try { fs.writeFileSync(prefFile(), JSON.stringify({ onTop })); } catch (e) {} }
 const saveFile = () => path.join(app.getPath('userData'), 'roger-save.json');
 function createWindow() {
   const wa = screen.getPrimaryDisplay().workArea;
@@ -12,10 +17,10 @@ function createWindow() {
     x: wa.x, y: wa.y, width: wa.width, height: wa.height,
     icon: ICON(process.platform === 'win32' ? 'icon.ico' : 'icon.png'), title: 'Roger',
     transparent: true, frame: false, resizable: false, movable: false, skipTaskbar: false,
-    hasShadow: false, backgroundColor: '#00000000', alwaysOnTop: true, fullscreenable: false,
+    hasShadow: false, backgroundColor: '#00000000', alwaysOnTop: onTop, fullscreenable: false,
     webPreferences: { preload: path.join(__dirname, 'preload.js'), backgroundThrottling: false }
   });
-  win.setAlwaysOnTop(true, 'screen-saver');
+  if (onTop) win.setAlwaysOnTop(true, 'screen-saver');
   win.setIgnoreMouseEvents(true, { forward: true });
   win.loadFile('index.html');
 }
@@ -36,13 +41,14 @@ function buildMenu(walking, playing) {
     { type: 'separator' },
     { label: 'Sit (stay put)', type: 'radio', checked: !walking, click: a('sit') },
     { label: 'Wander (walk around)', type: 'radio', checked: !!walking, click: a('wander') }, { label: 'Show stats', click: a('stats') },
+    { label: 'Always on top', type: 'checkbox', checked: onTop, click: (it) => setOnTop(it.checked) },
     { type: 'separator' }, { label: 'Quit', click: () => app.quit() }
   ]);
 }
 ipcMain.on('menu', (e, walking, playing) => { lastWalking = walking; lastPlaying = !!playing; buildMenu(walking, playing).popup({ window: win }); });
 if (process.platform === 'win32') app.setAppUserModelId('com.nines.rogerpet');
 app.whenReady().then(() => {
-  createWindow();
+  loadPrefs(); createWindow();
   tray = new Tray(nativeImage.createFromPath(ICON('icon.png')).resize({ width: 32, height: 32 }));
   tray.setToolTip('Roger (judging you)');
   const pop = () => tray.popUpContextMenu(buildMenu(lastWalking, lastPlaying));
@@ -57,6 +63,6 @@ if (process.env.ROGER_TEST) app.whenReady().then(() => {
       if (act.startsWith('js:')) win.webContents.executeJavaScript(act.slice(3)); else win.webContents.send('action', act);
       setTimeout(async () => { const img = await win.webContents.capturePage();
         fs.writeFileSync(path.join(process.env.ROGER_SHOT, `t${i}.png`), img.toPNG()); step(); }, +(process.env.ROGER_WAIT||1500)); }
-    else win.webContents.executeJavaScript('JSON.stringify(window.__log)').then(l => { console.log('LOG', l); app.quit(); });
+    else win.webContents.executeJavaScript('JSON.stringify(window.__log)').then(l => { console.log('LOG', l, 'onTop=' + win.isAlwaysOnTop()); app.quit(); });
   }, 2500));
 });
