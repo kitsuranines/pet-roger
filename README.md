@@ -6,3 +6,14 @@ Run from source: `npm install && npm start`. Windows: unzip and run `RogerPet-wi
 - Left-drag moves Roger.
 - Always on top: toggle in the right-click menu (saved). Double-click gives a quick pat.
 - Save file: %APPDATA%/roger-pet/roger-save.json
+
+## Building for Mac
+
+After packaging the Mac app, ad-hoc sign it before zipping (Apple Silicon Macs won't run unsigned apps):
+
+```sh
+scripts/sign-mac.sh RogerPet-darwin-arm64/RogerPet.app
+scripts/sign-mac.sh RogerPet-darwin-x64/RogerPet.app
+```
+
+On a Mac this runs `codesign --force --deep --sign -`; on Linux it uses [rcodesign](https://github.com/indygreg/apple-platform-rs/releases). Zip with symlinks preserved (`zip -qry`).
